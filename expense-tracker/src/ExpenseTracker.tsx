@@ -1,7 +1,12 @@
 import React from "react";
+import Form from "./components/Form";
 
 const ExpenseTracker = () => {
-  return <div>ExpenseTracker</div>;
+  return (
+    <>
+      <Form></Form>
+    </>
+  );
 };
 
 export default ExpenseTracker;
