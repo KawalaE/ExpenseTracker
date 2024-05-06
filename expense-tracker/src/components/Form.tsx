@@ -1,40 +1,36 @@
 import React from "react";
-import { z } from "zod";
+import { ZodIssueOptionalMessage, z } from "zod";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { categories } from "../ExpenseTracker";
 
 const schema = z.object({
   description: z
-    .string()
+    .string({ invalid_type_error: "Description field is required." })
     .min(1, { message: "Description should have at least on character." }),
   amount: z
     .number({ invalid_type_error: "Amount field is required." })
     .min(0, { message: "Number must be larger of equal to zero." }),
-  category: z.enum([
-    "Groceries",
-    "Utilities",
-    "Entertainment",
-    "Miscellaneous",
-    "Health",
-  ]),
+  category: z.enum(
+    ["Groceries", "Utilities", "Entertainment", "Miscellaneous", "Health"],
+    { errorMap: () => ({ message: "Please select an category." }) }
+  ),
 });
 
-type FormData = z.infer<typeof schema>;
+export type FormData = z.infer<typeof schema>;
 
-const onSubmit = (data: FormData) => {
-  console.log(data);
-};
+interface Props {
+  onClick: (data: FormData) => void;
+}
 
-const Form = () => {
+const Form = ({ onClick }: Props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onClick)}>
       <div className="mb-3">
         <label htmlFor="description" className="label-control">
           Description
@@ -67,8 +63,13 @@ const Form = () => {
         <label htmlFor="category" className="label-control">
           Category
         </label>
-        <select {...register("category")} className="form-select" id="category">
-          <option value="" disabled selected></option>
+        <select
+          {...register("category")}
+          defaultValue={""}
+          className="form-select"
+          id="category"
+        >
+          <option value="" disabled></option>
           {categories.map((category) => {
             return (
               <option key={category} value={category}>
@@ -81,7 +82,7 @@ const Form = () => {
           <p className="text-danger">{errors.category.message}</p>
         )}
       </div>
-      <button disabled={!isValid} type="submit" className="btn btn-primary">
+      <button type="submit" className="btn btn-primary">
         Add
       </button>
     </form>
