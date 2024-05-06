@@ -13,17 +13,26 @@ export const categories = [
 
 const ExpenseTracker = () => {
   const [expenses, setExpenses] = useState<FormData[]>([
-    { description: "Milk", amount: 5, category: "Groceries" },
+    { description: "z", amount: 5, category: "Groceries" },
+    { description: "s", amount: 10.6, category: "Utilities" },
+    { description: "d", amount: 5, category: "Entertainment" },
+    { description: "f", amount: 5, category: "Health" },
   ]);
 
   const addExpense = (expense: FormData) => {
     setExpenses([...expenses, expense]);
     console.log(expenses);
   };
+  const removeExpense = (expenseName: string) => {
+    let filteredArr = expenses.filter(
+      (expense) => expense.description !== expenseName
+    );
+    setExpenses([...filteredArr]);
+  };
   return (
     <>
       <Form onClick={addExpense}></Form>
-      <Table expenses={expenses}></Table>
+      <Table expenses={expenses} clickHandler={removeExpense}></Table>
     </>
   );
 };
