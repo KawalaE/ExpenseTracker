@@ -2,7 +2,6 @@ import React from "react";
 import { ZodIssueOptionalMessage, z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
-import { categories } from "../ExpenseTracker";
 
 const schema = z.object({
   description: z
@@ -18,12 +17,14 @@ const schema = z.object({
 });
 
 export type FormData = z.infer<typeof schema>;
+export type categoryName = "category";
 
 interface Props {
   onClick: (data: FormData) => void;
+  categories: string[];
 }
 
-const Form = ({ onClick }: Props) => {
+const Form = ({ onClick, categories }: Props) => {
   const {
     register,
     handleSubmit,
@@ -82,7 +83,7 @@ const Form = ({ onClick }: Props) => {
           <p className="text-danger">{errors.category.message}</p>
         )}
       </div>
-      <button type="submit" className="btn btn-primary">
+      <button type="submit" className="btn btn-primary mb-5">
         Add
       </button>
     </form>
